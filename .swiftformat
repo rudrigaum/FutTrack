@@ -10,4 +10,5 @@
 --semicolons never
 --commas always
 --stripunusedargs closure-only
---header strip
+--disable fileHeader
+--disable blankLinesAtStartOfScope
