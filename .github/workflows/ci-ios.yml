@@ -1,4 +1,3 @@
-
 name: CI iOS
 
 on:
@@ -27,6 +26,9 @@ jobs:
       - name: Show Xcode version
         run: xcodebuild -version
 
+      - name: List available simulators
+        run: xcrun simctl list devices available
+
       - name: Install SwiftLint
         run: brew install swiftlint
 
@@ -38,7 +40,7 @@ jobs:
           xcodebuild build \
             -project FutTrack.xcodeproj \
             -scheme FutTrack \
-            -destination 'platform=iOS Simulator,name=iPhone 16,OS=latest' \
+            -destination 'generic/platform=iOS Simulator' \
             -quiet
 
       - name: Run Tests
@@ -46,7 +48,7 @@ jobs:
           xcodebuild test \
             -project FutTrack.xcodeproj \
             -scheme FutTrack \
-            -destination 'platform=iOS Simulator,name=iPhone 16,OS=latest' \
+            -destination 'generic/platform=iOS Simulator' \
             -resultBundlePath TestResults \
             -quiet
 
