@@ -26,6 +26,22 @@ jobs:
       - name: List available simulators
         run: xcrun simctl list devices available
 
+      - name: Pick available iPhone simulator
+        id: pick_sim
+        shell: bash
+        run: |
+          DEVICE=$(xcrun simctl list devices available \
+            | grep -E "iPhone" \
+            | head -n 1 \
+            | sed -E 's/^[[:space:]]*([^([]+).*/\1/' \
+            | xargs)
+          if [ -z "$DEVICE" ]; then
+            echo "No available iPhone simulator found"
+            exit 1
+          fi
+          echo "Using simulator: $DEVICE"
+          echo "device=$DEVICE" >> "$GITHUB_OUTPUT"
+
       - name: Install SwiftLint
         run: brew install swiftlint
 
@@ -45,7 +61,7 @@ jobs:
           xcodebuild test \
             -project FutTrack.xcodeproj \
             -scheme FutTrack \
-            -destination 'generic/platform=iOS Simulator' \
+            -destination "platform=iOS Simulator,name=${{ steps.pick_sim.outputs.device }},OS=latest" \
             -resultBundlePath TestResults \
             -quiet
 
